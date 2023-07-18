@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useContext } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Layout from './Layout/Layout';
+import Home from './pages/home/Home';
+import Hotel from './pages/hotel/Hotel';
+import List from './pages/search/Search';
+import Login from './pages/login/Login';
+import Transactions from './pages/transaction/Transactions';
+import AuthContext from './store/authContext';
+import ScrollToTop from './UI/ScrollToTop';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
+  const auth = useContext(AuthContext);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Layout>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<List />} />
+        <Route path="/hotels/:id" element={<Hotel />} />
+        <Route
+          path="/login"
+          element={auth.isLogIn ? <Navigate replace to="/" /> : <Login />}
+        />
+        <Route path="/register" element={<Login signup={true} />} />
+        <Route
+          path="/transactions"
+          element={
+            auth.isLogIn ? <Transactions /> : <Navigate replace to="/login" />
+          }
+        />
+      </Routes>
+    </Layout>
+  );
+};
 
-export default App
+export default App;
